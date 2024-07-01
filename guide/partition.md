@@ -16,58 +16,75 @@
 
 ## Prerequisites
 
-- Have the bootloader unlocked
+- Bootloader already unlocked
 
-- [orangefox recovery](https://github.com/cloudsweets/Port-Windows-11-Galaxy-A52s-5G/releases/tag/file)
+- [OrangeFox recovery](https://github.com/cloudsweets/Port-Windows-11-Galaxy-A52s-5G/releases/tag/file)
 
 - [Platform Tools](https://developer.android.com/tools/releases/platform-tools)
 
-- [uefi](https://github.com/cloudsweets/Port-Windows-11-Galaxy-A52s-5G/releases/tag/file)
+- [UEFI](https://github.com/cloudsweets/Port-Windows-11-Galaxy-A52s-5G/releases/tag/file)
 
-- [driver](https://github.com/cloudsweets/Kodiak-Drivers/archive/refs/heads/main.zip)
+- [Windows drivers](https://github.com/cloudsweets/Kodiak-Drivers/archive/refs/heads/main.zip)
 
-- [vbmeta.tar](https://github.com/cloudsweets/Port-Windows-11-Galaxy-A52s-5G/releases/tag/file)
+- [Disabled vbmeta.tar](https://github.com/cloudsweets/Port-Windows-11-Galaxy-A52s-5G/releases/tag/file)
 
 - [Odin3](https://gitlab.com/Ryzen5950XT/odin_dl/-/raw/main/Odin3_v3.14.4.zip?inline=false)
 
 - [Windows ISO](https://uupdump.net/selectlang.php?id=9be0c3f7-8590-4a1c-b793-aaa0021e412a)
   #Windows version must be 26090
 
-#### You need to boot into orangefox recovery
-Your device needs to boot into download mode
->
->1. With the device powered off, hold **Volume Up** and **Volume Down** and connect the USB cable to your PC.
->
->2. Click **AP**, select the **orangefox** **recovery** file, and click the **Start** button to install.
->
->3.  Then, it will automatically reboot into download mode again. There will be an error message, but ignore it. Click **AP** in Odin3, select **vbmeta.tar**, and click the **Start** button.
->
->4. As soon as the device turns off, press the **volume up** button and **power** button simultaneously to boot into **orangefox recovery**.
 
-#### Unmount data partitions
-- Click the menu button in orangefox recovery. Click the **Mount button**. Please **uncheck** the **data button**
+## Flash modified OrangeFox recovery
+>
+>1. Power off your phone
+>
+>2. Connect the phone to your PC with a USB cable and immediately hold **Volume Up** and **Volume Down** buttons simultaneously.
+>
+>3. Once your phone enters Download mode, open Odin application on your PC.
+>
+>4. Click **AP** and select the **orangefox.tar** file
+>
+>5. Click **USERDATA** and select the **vbmeta.tar** file.
+>
+>6. Click **Start** button to begin flashing, your device will reboot automatically.
+>
+>7. As soon as the phone turns off, hold the **volume up** and **power** buttons simultaneously to boot into **OrangeFox recovery**.
 
-## Start the ADB shell
+## Modifying the partition table
+
+**Unmount the Data partition**
+
+Open the menu button in OrangeFox recovery and then click on the **Mount** button. Uncheck the **Data** button.
+
+**Open a terminal/cmd on your PC and enter recovery shell**
 ```sh
 adb shell
 ```
-## Create Partitions
 
-### Start parted
+**Start `parted` program**
 ```sh
 parted /dev/block/sda
 ```
 
-### Delete the `userdata` partition
-> You can make sure that 34 is the userdata partition number by running
->  `p`
+Enter `p` command to print the existing partitions
+
+<img src="../image/parted-print.png" width="312" height="339">
+
+You should have 34 partitions in total with the last 34th one being `userdata`.
+
+You will have to delete the `userdata` partition, create Windows partitions and then recreate userdata partition.
+
+<br>
+
+**4. Delete the `userdata` partition**
+> Make sure that 34 really is the userdata partition with `p` command first!
 ```sh
 rm 34
 ```
 
 ### Create partitions
 
-#### For 128Gb models:
+**For 128Gb models:**
 
 - Create the ESP partition (571MB)
 ```sh
@@ -84,39 +101,54 @@ mkpart win ntfs 13.8GB 73.8GB
 mkpart userdata ext4 73.8GB 127GB
 ```
 
-### Make ESP partiton bootable so the EFI image can detect it
+- Make ESP partiton bootable so that the EFI image can detect it
 ```sh
 set 34 esp on
 ```
 
-### Quit parted
+**Quit parted**
 ```sh
 quit
 ```
 
-### Reboot to orangefox recovery
+**Reboot to OrangeFox recovery**
+```sh
+reboot recovery
+```
 
-### Start the shell again on your PC
+Rebooting the phone to recovery after modifying partitions is really important.
+
+GPT partition table changes in recovery are only visible after a reboot.
+
+If you don't do this, you won't be able to proceed with the guide!
+
+## Format modified partitions
+
+- Start adb shell again on your PC
 ```cmd
 adb shell
 ```
 
-### Format partitions
--  Format the ESP partiton as FAT32
+- Format the ESP partiton to FAT32
 ```sh
 mkfs.fat -F32 -s1 /dev/block/bootdevice/by-name/esp -n ESPA52SXQ
 ```
 
--  Format the Windows partition as NTFS
+- Format the Windows partition to NTFS
 ```sh
 mkfs.ntfs -f /dev/block/bootdevice/by-name/win -L WINA52SXQ
 ```
 
-- Format data
-Go to Wipe menu and press Format Data, 
+- Format Android data partition
+
+In OrangeFox recovery go to Wipe menu and press Format Data, 
 then type `yes`.
 
-### Check if Android still starts
-just restart the phone, and see if Android still works
+<br>
+
+## Check if Android still boots
+After making changes to the partition table you need to verify if your phone can still boot Android.
+
+Be sure to verify that by rebooting to system.
 
 ## [Next step: Install Windows](https://github.com/cloudsweets/Port-Windows-11-Galaxy-A52s-5G/blob/main/guide/install.md)
