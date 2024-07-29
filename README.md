@@ -8,13 +8,14 @@
 >
 >**IF YOU AREN'T COMFORTABLE MODDING YOUR PHONE OR ITS PARTITION TABLE OR YOU ARE PARANOID OF BRICKING YOUR DEVICE CLICK AWAY NOW!!! YOU HAVE BEEN WARNED, YOU ARE ON YOUR OWN IF YOU BRICK YOUR DEVICE!!! AGAIN! YOU HAVE BEEN WARNED!!!**
 
-## Get Started
+## Main Guides
 
-- [Installation instructions](https://github.com/cloudsweets/Port-Windows-11-Galaxy-A52s-5G/blob/main/guide/partition.md)
+- [Manual Windows installation](guides/manual-windows-installation/partition.md)
+- [Uninstall Windows and keep Android](guides/uninstall-windows/page.md)
 
 ## Miscellaneous
 
-- [Project Status](https://github.com/cloudsweets/Port-Windows-11-Galaxy-A52s-5G/blob/main/guide/status.md)
+- [Project Status](guide/status.md)
 
 ## Contributors
 [<img alt="Renegade Project" src="https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/63859504?s=200&v=4&w=45&fit=cover&mask=circle&maxage=7d" />](https://github.com/edk2-porting)

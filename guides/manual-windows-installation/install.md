@@ -31,7 +31,7 @@ Type "Disk Management" in Windows search and click on "Create and format hard di
 
 Find your phone's disk, Disk Management should report it as offline:
 
-![img](https://raw.githubusercontent.com/cloudsweets/Port-Windows-11-Galaxy-A52s-5G/main/image/disk.png)
+![img](images/disk.png)
 
 Right click on your disk and select the "Online" option.
 
@@ -88,7 +88,7 @@ Gdisk will now exit and your UFS LUN should now be online and restored.
 
 To check that, refresh Disk Management and you should see all of your partitions listed:
 
-![img](https://raw.githubusercontent.com/cloudsweets/Port-Windows-11-Galaxy-A52s-5G/main/image/disk2.png)
+![img](images/disk2.png)
 
 **Now exit adb shell from your terminal with this command**
 
@@ -154,6 +154,16 @@ exit
 dism /apply-image /ImageFile:<path/to/install.wim> /index:1 /ApplyDir:X:\
 ```
 
+**Example command**
+
+For instance, if you have mounted the Windows ISO and copied the full path of install.wim file
+in the File Explorer top path bar, the command would look something like this:
+
+```cmd
+dism /apply-image /ImageFile:E:\sources\install.wim /index:1 /ApplyDir:X:\
+```
+
+
 <br>
 
 ## Install Drivers
@@ -161,7 +171,7 @@ dism /apply-image /ImageFile:<path/to/install.wim> /index:1 /ApplyDir:X:\
 > Extract the drivers you downloaded earlier and open a terminal in the drivers directory.
 
 ```cmd
-.\driverupdater.exe -d definitions\Desktop\ARM64\Internal\kodiak.txt -r . -p X:
+.\DriverUpdater.exe -p X: -d definitions\Desktop\ARM64\Internal\a52sxq_platform.xml -r .
 ```
 
 <br>
